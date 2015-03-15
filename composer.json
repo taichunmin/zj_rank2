@@ -12,7 +12,8 @@
     "autoload": {
         "psr-4": {"ZJR2\\": "src/"},
         "files": [
-            "src/helper_functions.php"
+            "src/helper_functions.php",
+            "src/config.php"
         ]
     },
     "require-dev": {

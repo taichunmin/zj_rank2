@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "18a6cd18f80bb050d49d10c7e6567c51",
+    "hash": "aabf3a1a426b1b1bea190e443a9e4336",
     "packages": [
         {
             "name": "asimlqt/php-google-spreadsheet-client",
