@@ -1,5 +1,4 @@
 <?php
-// http://zerojudge.tw/UserStatistic?userid=3714
 
 namespace ZJR2;
 
@@ -25,13 +24,13 @@ class Curl
 	public $headers_post = array();
 
 	/**
-	 * [$curlopts_all description]
+	 * Curlopts for all method.
 	 * @var array
 	 */
 	public $curlopts_all = array(
+		CURLOPT_CONNECTTIMEOUT_MS => 30000, // 單次超時 30 秒
+		CURLOPT_TIMEOUT_MS        => 60000, // 總計超時 60 秒
 		CURLINFO_HEADER_OUT => true,
-		CURLOPT_COOKIEFILE => 'cookie.txt',	// read cookie
-		CURLOPT_COOKIEJAR => 'cookie.txt',		// write cookies
 		CURLOPT_FAILONERROR => true,
 		CURLOPT_FOLLOWLOCATION => true,
 		CURLOPT_HEADER => true,
@@ -47,38 +46,43 @@ class Curl
 
 	private $parse_url = array();
 
+	function __construct($cookie = 'default.cookie')
+	{
+		$this->curlopts_all[CURLOPT_COOKIEFILE] = $cookie;
+		$this->curlopts_all[CURLOPT_COOKIEJAR] = $cookie;
+	}
+
 	private function _header_build($headers)
 	{
-		// $headers = array_merge($this->headers_all, $this->headers_post);
 		$parse_url = &$this->parse_url;
 		$headers['Origin'] = sprintf('%s://%s', $parse_url['scheme'], $parse_url['host']);
 		foreach($headers as $key => &$value)
-			$headers = sprintf('%s: %s', $key, $value);
-		return array_keys($headers);
+			$value = sprintf('%s: %s', $key, $value);
+		return array_values($headers);
 	}
 
 	private function _curlopts_build($curlopts, $headers)
 	{
-		// $curlopts = array_merge($this->curlopts_all, $this->curlopts_post);
-		$curlopts[CURLOPT_REFERER] = get($arg['referer'], sprintf('%s://%s', $parse_url['scheme'], $parse_url['host']));
+		$parse_url = &$this->parse_url;
+		$curlopts[CURLOPT_REFERER] = sprintf('%s://%s', $parse_url['scheme'], $parse_url['host']);
 		$curlopts[CURLOPT_HTTPHEADER] = $headers;
+		return $curlopts;
 	}
 
-	public function get($url, $query, $opts)
+	public function get($url, $query = array(), $opts = array())
 	{
-
 		$this->set_url($url, $query);
 		$headers = $this->_header_build( $this->headers_all );
 		$curlopts = $this->_curlopts_build( $this->curlopts_all, $headers );
 		return $this->exec($curlopts);
 	}
 
-	public function post($url, $postfields, $opts)
+	public function post($url, $postfields = array(), $opts = array())
 	{
 		$this->set_url($url, get($opts['query'], array()));
 		$this->curlopts_post[CURLOPT_POSTFIELDS] = is_array($postfields) ? http_build_query($postfields) : $postfields;
-		$headers = $this->_header_build( array_merge($this->headers_all, $this->headers_post) );
-		$curlopts = $this->_curlopts_build( array_merge($this->curlopts_all, $this->curlopts_post), $headers );
+		$headers = $this->_header_build( $this->headers_all + $this->headers_post );
+		$curlopts = $this->_curlopts_build( $this->curlopts_all + $this->curlopts_post, $headers );
 		return $this->exec($curlopts);
 	}
 
@@ -88,7 +92,7 @@ class Curl
 		curl_setopt_array($ch, $curlopts);
 		$frame = curl_exec($ch);
 		$data = curl_getinfo($ch);
-		if(false === $frame){
+		if(false !== $frame){
 			$data['header'] = explode("\r\n\r\n", $frame, $data['redirect_count']+2);
 			$data['html'] = array_pop($data['header']);
 		} else {
@@ -107,12 +111,17 @@ class Curl
 				parse_str($query, $query);
 			if(!is_array($query))
 				throw new Exception('Error on set_url '.var_export($query, true));
+			$parse_url['query'] = get($parse_url['query'], '');
 			parse_str($parse_url['query'], $query2);
-			$url = substr($url, 0, -strlen($parse_url['query'])) . http_build_query(array_merge($query2, $query));
+			if(!empty($parse_url['query']))
+				$url = substr($url, 0, -strlen($parse_url['query']));
+			if($url[strlen($url)-1]!='?')
+				$url .= '?';
+			$url .= http_build_query(array_merge($query2, $query));
 			$parse_url = parse_url($url);
 		}
 		$this->curlopts_all[CURLOPT_URL] = $url;
-		if( false === $this->parse_url )
+		if( false === $parse_url )
 			throw new Exception('curl parse url error');
 	}
 }
