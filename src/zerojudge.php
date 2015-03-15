@@ -6,7 +6,7 @@ namespace ZJR2;
 
 class Zerojudge
 {
-	public function get_ac($account)
+	public function get_statistic($account)
 	{
 		$curl = new Curl('zerojudge.cookie');
 		$data = $curl->get('http://zerojudge.tw/UserStatistic', array(
@@ -24,7 +24,15 @@ class Zerojudge
 		}
 		// file_put_contents('debug.html', $data['html']);
 		// file_put_contents('debug.php', var_export($data, true));
-		// $('a[href$="=AC"]').text()
-		return htmlqp($data['html'], 'a[href$="=AC"]')->text();
+		$statistic = array();
+		foreach(htmlqp($data['html'], 'a[href*=status]') as $qpv){
+			$href = $qpv->attr('href');
+			if(! preg_match('/status=(\w+)/us', $href, $href_match))
+				continue;
+			$status = $href_match[1];
+			$cnt = intval($qpv->text());
+			$statistic[$status] = $cnt;
+		}
+		return $statistic;
 	}
 }
