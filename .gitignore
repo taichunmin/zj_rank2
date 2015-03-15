@@ -1,3 +1,5 @@
 /vendor/
 /debug.html
 /debug.php
+/src/config.php
+*.cookie
