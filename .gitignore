@@ -3,3 +3,4 @@
 /debug.php
 /src/config.php
 *.cookie
+GoogleOauth2DeviceSession.inc.php
