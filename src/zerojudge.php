@@ -8,6 +8,7 @@ class Zerojudge
 {
 	public function get_statistic($account)
 	{
+		usleep(rand(200,1000)); // sleep 0.2 ~ 1.0 second
 		$curl = new Curl('zerojudge.cookie');
 		$data = $curl->get('http://zerojudge.tw/UserStatistic', array(
 			'account' => $account,
