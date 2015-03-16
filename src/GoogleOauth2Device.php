@@ -26,7 +26,7 @@ class GoogleOauth2Device
 		$this->save_states();
 	}
 
-	public function main()
+	public function access_token()
 	{
 		$states = &$this->states;
 		if(empty($states['stage']))

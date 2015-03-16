@@ -5,4 +5,4 @@ set_time_limit(0);
 
 $go2d = new ZJR2\GoogleOauth2Device();
 
-$go2d->main();
+$go2d->access_token();
