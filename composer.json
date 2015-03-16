@@ -5,7 +5,7 @@
         "php": ">= 5.4.0",
         "lib-curl": "*",
         "lib-openssl": "*",
-        "asimlqt/php-google-spreadsheet-client": "2.3.*",
+        "taichunmin/php-google-spreadsheet-client": "dev-master",
         "querypath/QueryPath": ">=3.0.0",
         "google/apiclient": "1.0.*@beta"
     },
