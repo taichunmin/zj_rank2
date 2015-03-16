@@ -33,7 +33,7 @@ class GoogleOauth2Device
 			$this->reset_states();
 		while(get($states['access_token_expire'], 0) <= time())
 			$this->{'stage'.$states['stage']}();
-		return $states['access_token'];
+		return array('token' => $states['access_token'], 'type' => $states['token_type']);
 	}
 
 	private function stage1()
@@ -108,6 +108,7 @@ class GoogleOauth2Device
 		}
 		$this->states['stage'] = 3;
 		$this->states['access_token'] = $state['access_token'];
+		$this->states['token_type'] = $state['token_type'];
 		$this->states['access_token_expire'] = time() + $state['expires_in'];
 		$this->states['refresh_token'] = $state['refresh_token'];
 		echo PHP_EOL;
@@ -202,6 +203,7 @@ class GoogleOauth2Device
 		}
 		$this->states['stage'] = 3;
 		$this->states['access_token'] = $state['access_token'];
+		$this->states['token_type'] = $state['token_type'];
 		$this->states['access_token_expire'] = time() + $state['expires_in'];
 		echo PHP_EOL;
 		echo 'Success! '.PHP_EOL;

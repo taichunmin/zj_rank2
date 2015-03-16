@@ -31,7 +31,7 @@ class Zerojudge
 				continue;
 			$status = $href_match[1];
 			$cnt = intval($qpv->text());
-			$statistic[$status] = $cnt;
+			$statistic[strtolower($status)] = $cnt;
 		}
 		return $statistic;
 	}

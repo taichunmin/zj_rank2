@@ -9,6 +9,12 @@
         "querypath/QueryPath": ">=3.0.0",
         "google/apiclient": "1.0.*@beta"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/taichunmin/php-google-spreadsheet-client"
+        }
+    ],
     "autoload": {
         "psr-4": {"ZJR2\\": "src/"},
         "files": [
