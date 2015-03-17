@@ -1,6 +1,8 @@
 <?php
-/**
- * /usr/bin/php /home/taichunmin/zj_rank2/updateGoogleSheetRank.php 1>/home/taichunmin/zj_rank2/last.log 2>&1
+/*
+0 * * * * /usr/bin/php /home/taichunmin/zj_rank2/updateGoogleSheetRank.php 1>/home/taichunmin/zj_rank2/last.log 2>&1
+5-55/5 18-23 * * 2,4 /usr/bin/php /home/taichunmin/zj_rank2/updateGoogleSheetRank.php 1>/home/taichunmin/zj_rank2/last.log 2>&1
+5-55/5 12-19 * * 0 /usr/bin/php /home/taichunmin/zj_rank2/updateGoogleSheetRank.php 1>/home/taichunmin/zj_rank2/last.log 2>&1
  */
 
 require_once('vendor/autoload.php');
