@@ -11,6 +11,7 @@ class GoogleOauth2Device
 	protected $session_file = '';
 	protected $states;
 	protected $try_cnt = 0;
+	protected $minAvailable = 60;
 	public $curl;
 	public $try_cnt_limit = 3;
 
@@ -28,12 +29,13 @@ class GoogleOauth2Device
 		$this->save_states();
 	}
 
-	public function access_token()
+	public function access_token( $minAvailable = 60 )
 	{
 		$states = &$this->states;
+		$this->minAvailable = $minAvailable;
 		if(empty($states['stage']))
 			$this->reset_states();
-		while(get($states['access_token_expire'], 0) <= time())
+		while(get($states['access_token_expire'], 0) < time() + $this->minAvailable)
 			$this->{'stage'.$states['stage']}();
 		return array('token' => $states['access_token'], 'type' => $states['token_type']);
 	}
@@ -116,6 +118,8 @@ class GoogleOauth2Device
 		$this->states['access_token'] = $state['access_token'];
 		$this->states['token_type'] = $state['token_type'];
 		$this->states['access_token_expire'] = time() + $state['expires_in'];
+		if($state['expires_in'] < $this->minAvailable)
+			$this->minAvailable = $state['expires_in'];
 		$this->states['refresh_token'] = $state['refresh_token'];
 		echo PHP_EOL;
 		echo 'Success! '.PHP_EOL;
@@ -154,10 +158,6 @@ class GoogleOauth2Device
 		$state = json_decode($respon['html'], true);
 		if(empty($state))
 			throw new Exception('json parse error: '.$respon['html']);
-		if(!empty($state['error'])){
-			$this->states['stage'] = 4;
-			return $this;
-		}
 		/*
 			{
 				"audience":"8819981768.apps.googleusercontent.com",
@@ -166,7 +166,10 @@ class GoogleOauth2Device
 				"expires_in":436
 			}
 		 */
-		if($state['audience'] !== $this->client_id){
+		if(!empty($state['error']) || $state['expires_in'] < $this->minAvailable){
+			$this->states['stage'] = 4;
+			return $this;
+		} elseif($state['audience'] !== $this->client_id) {
 			$this->reset_states();
 			return $this;
 		}
@@ -211,6 +214,8 @@ class GoogleOauth2Device
 		$this->states['access_token'] = $state['access_token'];
 		$this->states['token_type'] = $state['token_type'];
 		$this->states['access_token_expire'] = time() + $state['expires_in'];
+		if($state['expires_in'] < $this->minAvailable)
+			$this->minAvailable = $state['expires_in'];
 		echo PHP_EOL;
 		echo 'Success! '.PHP_EOL;
 		echo 'Token: '.$this->states['access_token'].PHP_EOL;
