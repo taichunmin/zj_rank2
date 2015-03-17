@@ -35,6 +35,7 @@
   <body>
     <div class="container">
       <h1>興大資訊社 103 下 ACM 讀書會</h1>
+      <p id="updated"></p>
       <div class="panel panel-info" id="zj-rank-panel">
         <div class="panel-heading">
           <h3 class="panel-title"><i class="glyphicon glyphicon-thumbs-up"></i> Zerojudge 排行榜</h3>
@@ -108,6 +109,7 @@
               $iRow.find('.zj-name>a').attr('href', $iRow.find('.zj-name>a').attr('href')+iv['account']);
               $tbody.append($iRow);
             });
+            $('#updated').text('最後更新：' + this.updated.toLocaleString());
           });
         });
 
@@ -127,6 +129,7 @@
               });
               me.data.push(tmp2);
             });
+            me.updated = new Date(data.feed.updated['$t']);
             me.status = true;
             console.log('From %s loaded %d data.', gsx_name, me.data.length);
             if(typeof(gsx_callback) === "function")
