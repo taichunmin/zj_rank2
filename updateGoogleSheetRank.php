@@ -1,7 +1,11 @@
 <?php
+/**
+ * /usr/bin/php /home/taichunmin/zj_rank2/updateGoogleSheetRank.php 1>/home/taichunmin/zj_rank2/last.log 2>&1
+ */
 
 require_once('vendor/autoload.php');
 set_time_limit(0);
+chdir(dirname(__FILE__));
 
 use Google\Spreadsheet\DefaultServiceRequest;
 use Google\Spreadsheet\ServiceRequestFactory;

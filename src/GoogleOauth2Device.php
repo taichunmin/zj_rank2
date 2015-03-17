@@ -5,12 +5,14 @@ use \Exception;
 
 class GoogleOauth2Device
 {
-	public $states;
-	public $session_file = '';
-	public $curl_cookie = '';
-	public $client_id = GOOGLE_CLIENT_ID;
-	public $client_secret = GOOGLE_CLIENT_SECRET;
+	protected $client_id = GOOGLE_CLIENT_ID;
+	protected $client_secret = GOOGLE_CLIENT_SECRET;
+	protected $curl_cookie = '';
+	protected $session_file = '';
+	protected $states;
+	protected $try_cnt = 0;
 	public $curl;
+	public $try_cnt_limit = 3;
 
 	function __construct($session_name = 'GoogleOauth2DeviceSession')
 	{
@@ -39,6 +41,9 @@ class GoogleOauth2Device
 	private function stage1()
 	{
 		// https://developers.google.com/accounts/docs/OAuth2ForDevices#obtainingacode
+		if($this->try_cnt > $this->try_cnt_limit)
+			throw new Exception('Google Oauth2 error after trying '.$this->try_cnt.' times');
+
 		$curl = &$this->curl;
 		$state = &$this->states[__FUNCTION__];
 		$state = (array) $state;
@@ -63,6 +68,7 @@ class GoogleOauth2Device
 		*/
 		$state['expire'] = time() + $state['expires_in'];
 		$this->states['stage'] = 2;
+		$this->try_cnt ++;
 		// die(var_export($this->states, true));
 	}
 
