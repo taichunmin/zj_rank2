@@ -9,21 +9,20 @@ chdir(dirname(__FILE__));
 
 use Google\Spreadsheet\DefaultServiceRequest;
 use Google\Spreadsheet\ServiceRequestFactory;
+use Google\Spreadsheet\Worksheet;
 
 $go2d = new ZJR2\GoogleOauth2Device();
 
 $googleAccessToken = $go2d->access_token();
-// echo var_export($googleAccessToken, true).PHP_EOL;
 
 $serviceRequest = new DefaultServiceRequest($googleAccessToken['token'], $googleAccessToken['type']);
-// die(var_export($serviceRequest, true));
 ServiceRequestFactory::setInstance($serviceRequest);
 
-$spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
-$spreadsheetFeed = $spreadsheetService->getSpreadsheets();
-$spreadsheet = $spreadsheetFeed->getByTitle('103下 - Zerojudge 排行榜');
-$worksheetFeed = $spreadsheet->getWorksheets();
-$worksheet = $worksheetFeed->getByTitle('表單回應 1');
+$worksheet = new Worksheet(
+	new SimpleXMLElement(
+		ServiceRequestFactory::getInstance()->get(sprintf('feeds/worksheets/%s/private/full/%s', ZJR2\GOOGLE_SPREADSHEET_ID, ZJR2\GOOGLE_WORKSHEET_ID))
+	)
+);
 $listFeed = $worksheet->getListFeed();
 
 $zj = new ZJR2\Zerojudge();
