@@ -8,7 +8,7 @@ class ProgressBar
 	private $cnt = 0;
 	private $molecular = 0;	// 分子
 	private $ng;			// 下一個目標
-	private $clear_line = "                                                                               \r";
+	private $clear_line = "\r                                                                                \r";
 	public $printFormat;
 	public static $_display = true;	// 用來關閉輸出
 	function __construct($new_max = 1, $f = 'Running: %d%%')
