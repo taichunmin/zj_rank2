@@ -115,7 +115,7 @@ https://spreadsheets.google.com/feeds/list/1Qg5PIPiKgufZFsKdbc185FP4DX1k2X_lNlLJ
 
 ```sh
 cd zj_rank2/
-php updateGoogleSheetRank.php
+./cron.sh
 ```
 
 * 本程式需要使用 Google Oauth2 Device 授權，如果出現以下文字：
@@ -126,3 +126,53 @@ Enter The User Code: GQVQ-JKEC
 ```
 
 請用瀏覽器開啟 <https://www.google.com/device>，登入 Google 帳戶後，使用 `User Code` 進行授權。
+
+
+## Crontab 定期執行
+
+本程式可設定使用 crontab 定期執行。
+
+* 進入 crontab 設定頁面
+
+```sh
+crontab -e
+```
+
+* 設定如下 crontab 設定
+
+若要每個小時執行一次，設定檔如下：
+
+```sh
+0 * * * * /home/taichunmin/zj_rank2/cron.sh > /home/taichunmin/zj_rank2/last.log 2>&1
+```
+
+## 修改呈現頁面
+
+使用 Bootstrap 製作的 Responsive Web Design 頁面位於 `src/Zerojudge_Ranking.html`，請自行修改程式碼的 `title`, `h1` 及以下的 `GOOGLE_SPREADSHEET_ID/GOOGLE_WORKSHEET_ID`。
+
+```js
+var zj_rank = new Gsx('GOOGLE_SPREADSHEET_ID/GOOGLE_WORKSHEET_ID', function());
+```
+
+## 授權
+
+本程式主體採用 `MIT` 授權。 其餘使用到的函示庫列舉如下：
+
+<table>
+	<tr>
+		<th>套件名稱</th>
+		<td>授權方式</td>
+	</tr>
+	<tr>
+		<th>taichunmin/php-google-spreadsheet-client</th>
+		<td>MIT</td>
+	</tr>
+	<tr>
+		<th>technosophos/querypath</th>
+		<td>MIT</td>
+	</tr>
+	<tr>
+		<th>google/google-api-php-client</th>
+		<td>Apache 2.0</td>
+	</tr>
+</table>
