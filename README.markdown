@@ -53,8 +53,6 @@ composer install
 
 > Google 官方文件： <https://developers.google.com/google-apps/spreadsheets/#authorizing_requests_with_oauth_20>
 
-以下均為假資料。
-
 <table>
 	<tr>
 		<th>GOOGLE_CLIENT_ID</th>
@@ -66,23 +64,25 @@ composer install
 	</tr>
 </table>
 
-* Google SpreadSheets Config
+> 上表均為假資料。
+
+#### Google SpreadSheets Config
 
 這兩個欄位需要填寫你想要動態更新的 SpreadSheets ID 中的 Worksheets ID。 查詢步驟如下：
 
-1. 先在網頁端開啟你想要的 SpreadSheets，然後複製網址如下：
+* 先在網頁端開啟你想要的 SpreadSheets，然後複製網址如下：
 
 ```
 https://docs.google.com/spreadsheets/d/1Qg5PIPiKgufZFsKdbc185FP4DX1k2X_lNlLJXzyAKkY/edit#gid=336254113
 ```
 
-2. 在網址中間就會有 SpreadSheets ID
+* 在網址中間就會有 SpreadSheets ID
 
 ```
 1Qg5PIPiKgufZFsKdbc185FP4DX1k2X_lNlLJXzyAKkY
 ```
 
-3. 透過 SpreadSheets ID 連結以下網址取得所有的 Worksheets
+* 透過 SpreadSheets ID 連結以下網址取得所有的 Worksheets
 
 > 請記得，將底下的 SpreadSheets ID 替換成你想要的。
 
@@ -90,7 +90,7 @@ https://docs.google.com/spreadsheets/d/1Qg5PIPiKgufZFsKdbc185FP4DX1k2X_lNlLJXzyA
 https://spreadsheets.google.com/feeds/worksheets/1Qg5PIPiKgufZFsKdbc185FP4DX1k2X_lNlLJXzyAKkY/private/full
 ```
 
-4. 找到你想要的 Worksheets ID
+* 找到你想要的 Worksheets ID
 
 ```
 https://spreadsheets.google.com/feeds/list/1Qg5PIPiKgufZFsKdbc185FP4DX1k2X_lNlLJXzyAKkY/o5k73i3/private/full
@@ -98,7 +98,7 @@ https://spreadsheets.google.com/feeds/list/1Qg5PIPiKgufZFsKdbc185FP4DX1k2X_lNlLJ
 
 在這資料之中，`o5k73i3` 就是想要的 Worksheets ID。
 
-5. 記得將 Worksheets 公開發佈到網路上
+* 記得將 Worksheets 公開發佈到網路上
 
 <table>
 	<tr>
