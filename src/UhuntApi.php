@@ -4,7 +4,7 @@
 
 namespace ZJR2;
 
-class UhuntCrawler
+class UhuntApi
 {
 	const API_BASE = 'http://uhunt.felix-halim.net/api/';
 	const MAP_VERDICT = [
@@ -15,9 +15,9 @@ class UhuntCrawler
 		'30' => 'ce', // Compile error
 		'35' => 'rf', // Restricted function
 		'40' => 're', // Runtime error
-		'45' => 'ol', // Output limit
-		'50' => 'tl', // Time limit
-		'60' => 'ml', // Memory limit
+		'45' => 'ole', // Output limit
+		'50' => 'tle', // Time limit
+		'60' => 'mle', // Memory limit
 		'70' => 'wa', // Wrong answer
 		'80' => 'pe', // PresentationE
 		'90' => 'ac', // Accepted
