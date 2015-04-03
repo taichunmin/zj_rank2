@@ -22,6 +22,17 @@ class UhuntApi
 		'80' => 'pe', // PresentationE
 		'90' => 'ac', // Accepted
 	];
+	const MAP_SUB_KEY = [
+		0 => 'sid', // 上傳 ID
+		1 => 'pid', // 題目 ID
+		2 => 'ver', // Judge 結果
+		3 => 'run', // 執行時間 (ms)
+		4 => 'sbt', // 上傳時間 (unix timestamp)
+		5 => 'lan', // 程式語言 (1=ANSI C, 2=Java, 3=C++, 4=Pascal, 5=C++11)
+		6 => 'rank', // 排行
+	];
+
+	protected $pnum2pid = [], $pid2pnum = [];
 
 	public function uname2uid($uname = null)
 	{
@@ -30,6 +41,26 @@ class UhuntApi
 		$curl = new Curl('uhunt.cookie');
 		$data = $curl->get(sprintf(self::API_BASE.'uname2uid/'.$uname));
 		return intval($data['html']);
+	}
+
+	public function pnum2pid($pnum)
+	{
+		if(empty($this->pnum2pid[$pnum])){
+			$tmp = $this->p_num($pnum);
+			$this->pnum2pid[$pnum] = $tmp['pid'];
+			$this->pid2pnum[$tmp['pid']] = $pnum;
+		}
+		return $this->pnum2pid[$pnum];
+	}
+
+	public function pid2pnum($pid)
+	{
+		if(empty($this->pid2pnum[$pid])){
+			$tmp = $this->p_id($pid);
+			$this->pnum2pid[$tmp['num']] = $pid;
+			$this->pid2pnum[$pid] = $tmp['num'];
+		}
+		return $this->pid2pnum[$pid];
 	}
 
 	/**
@@ -111,13 +142,13 @@ class UhuntApi
 	 *   array (
 	 *     0 =>
 	 *     array (
-	 *       0 => 4980033, // 上傳 ID
-	 *       1 => 1012, // 題目 ID
-	 *       2 => 10, // Judge 結果
-	 *       3 => 5068, // 執行時間 (ms)
-	 *       4 => 1159348120, // 上傳時間 (unix timestamp)
-	 *       5 => 3, // 程式語言 (1=ANSI C, 2=Java, 3=C++, 4=Pascal, 5=C++11)
-	 *       6 => -1, // 排行
+	 *       'sid' => 4980033, // 上傳 ID
+	 *       'pid' => 1012, // 題目 ID
+	 *       'ver' => 10, // Judge 結果
+	 *       'run' => 5068, // 執行時間 (ms)
+	 *       'sbt' => 1159348120, // 上傳時間 (unix timestamp)
+	 *       'lan' => 3, // 程式語言 (1=ANSI C, 2=Java, 3=C++, 4=Pascal, 5=C++11)
+	 *       'rank' => -1, // 排行
 	 *     ),
 	 *   ),
 	 * )
@@ -132,8 +163,11 @@ class UhuntApi
 		$curl = new Curl('uhunt.cookie');
 		$data = $curl->get($url);
 		$subs_user = json_decode($data['html'], true) ?: array();
-		foreach($subs_user['subs'] as &$sub)
-			$sub[2] = self::MAP_VERDICT[ $sub[2] ] ?: 'null';
+		foreach($subs_user['subs'] as &$sub){
+			$sub[2] = self::MAP_VERDICT[ $sub[2] ] ?: 'se';
+			$sub = array_combine(self::MAP_SUB_KEY, $sub);
+		}
+		unset($sub);
 		return $subs_user;
 	}
 
@@ -172,37 +206,5 @@ class UhuntApi
 		$data = $curl->get($url);
 		$ranklists = json_decode($data['html'], true) ?: array();
 		return $ranklists;
-	}
-
-	/**
-	 * [get_statistic description]
-	 * @param  [type] $user [description]
-	 * @return array (
-   *   'rank' => 6372, // 排行
-   *   'old' => 0, // 如果非 0 代表該使用者需要 migrate 舊資料
-   *   'userid' => 4530, // 使用者 ID
-   *   'name' => 'taichunmin', // 使用者名稱
-   *   'username' => 'taichunmin', // 使用者帳號
-   *   'ac' => 120, // AC 題數
-   *   'nos' => 353, // 累計上傳數量
-   *   'activity' => // 活躍情形
-   *   array (
-   *     0 => 0, // 2 天內 AC 題數
-   *     1 => 1, // 7 天內 AC 題數
-   *     2 => 1, // 31 天內 AC 題數
-   *     3 => 1, // 3 月內 AC 題數
-   *     4 => 1, // 1 年內 AC 題數
-   *   ),
-   * )
-	 */
-	public function get_statistic($user)
-	{
-		if( is_string($user) && !preg_match('/^\d+$/us', $user))
-			$user = $this->uname2uid($user);
-		$user = intval($user);
-		if($user <= 0)
-			return array();
-		$ranklists = $this->ranklist($user);
-		return $ranklists[0];
 	}
 }
