@@ -7,7 +7,7 @@ namespace ZJR2;
 class UhuntApi
 {
 	const API_BASE = 'http://uhunt.felix-halim.net/api/';
-	const MAP_VERDICT = [
+	static $MAP_VERDICT = [
 		'0' => 'qu', // In queue
 		'10' => 'se', // Submission error
 		'15' => 'cj', // Can't be judged
@@ -22,7 +22,7 @@ class UhuntApi
 		'80' => 'pe', // PresentationE
 		'90' => 'ac', // Accepted
 	];
-	const MAP_SUB_KEY = [
+	static $MAP_SUB_KEY = [
 		0 => 'sid', // 上傳 ID
 		1 => 'pid', // 題目 ID
 		2 => 'ver', // Judge 結果
@@ -164,8 +164,8 @@ class UhuntApi
 		$data = $curl->get($url);
 		$subs_user = json_decode($data['html'], true) ?: array();
 		foreach($subs_user['subs'] as &$sub){
-			$sub[2] = self::MAP_VERDICT[ $sub[2] ] ?: 'se';
-			$sub = array_combine(self::MAP_SUB_KEY, $sub);
+			$sub[2] = self::$MAP_VERDICT[ $sub[2] ] ?: 'se';
+			$sub = array_combine(self::$MAP_SUB_KEY, $sub);
 		}
 		unset($sub);
 		return $subs_user;

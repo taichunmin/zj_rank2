@@ -56,12 +56,10 @@ class ProgressBar
 	}
 	public function cls()
 	{
-		echo "\r";
-		while($this->last_echo_length>0){
-			echo ' ';
-			$this->last_echo_length --;
+		if($this->last_echo_length > 0){
+			echo "\r".str_repeat(' ', $this->last_echo_length)."\r";
+			$this->last_echo_length = 0;
 		}
-		echo "\r";
 		return $this;
 	}
 	public function setf($f)
