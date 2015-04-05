@@ -34,7 +34,7 @@
         margin-bottom: 3px;
       }
       .tmpl{
-        display: none;
+        display: none !important;
       }
     </style>
   </head>
@@ -65,7 +65,7 @@
                       <th class="cell-no">#</th>
                       <th></th>
                       <th class="cell-ac success">AC</th>
-                      <th class="cell-nos danger">SUBs</th>
+                      <th class="cell-nos warning">SUBs</th>
                       <th class="cell-recent-ac" colspan="3">Recent AC</th>
                     </tr>
                   </thead>
@@ -74,7 +74,7 @@
                       <td class="cell-no"></td>
                       <td class="cell-name"><a href="" target="_blank"></a></td>
                       <td class="cell-ac success">-1</td>
-                      <td class="cell-nos danger">-1</td>
+                      <td class="cell-nos warning">-1</td>
                       <td class="cell-recent-ac"></td>
                       <td class="cell-recent-ac"></td>
                       <td class="cell-recent-ac"></td>
@@ -189,7 +189,7 @@
           var $pane = $panetmpl.clone(true).removeClass('tmpl').attr({
             id: 'rankpane-'+conf['id'],
           });
-          $pane.find('.panel-title span').text(title + '排行榜');
+          $pane.find('.panel-title span').text(title + ' 排行榜');
           var $trtmpl = $pane.find('tr.tmpl');
 
           $.each(ranks, function(ik, iv){
