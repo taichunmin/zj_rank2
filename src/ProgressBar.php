@@ -8,7 +8,7 @@ class ProgressBar
 	private $cnt = 0;
 	private $molecular = 0;	// 分子
 	private $ng;			// 下一個目標
-	private $clear_line = "\r                                                                                \r";
+	public $last_echo_length=0;
 	public $printFormat;
 	public static $_display = true;	// 用來關閉輸出
 	function __construct($new_max = 1, $f = 'Running: %d%%')
@@ -48,12 +48,20 @@ class ProgressBar
 	{
 		if(isset($f))$this->setf($f);
 		if( !self::$_display || empty($this->printFormat) ) return;
-		echo sprintf($this->clear_line.$this->printFormat."\r",$this->molecular);
+		$this->cls();
+		$output = sprintf($this->printFormat."\r",$this->molecular);
+		$this->last_echo_length = strlen($output) -1;
+		echo $output;
 		return $this;
 	}
 	public function cls()
 	{
-		echo sprintf($this->clear_line);
+		echo "\r";
+		while($this->last_echo_length>0){
+			echo ' ';
+			$this->last_echo_length --;
+		}
+		echo "\r";
 		return $this;
 	}
 	public function setf($f)
