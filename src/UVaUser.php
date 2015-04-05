@@ -8,7 +8,7 @@ use \SplMinHeap;
 class UVaUser{
 	protected $uid = null, $api, $profile, $pid_key, $pid_stats, $sid2pid, $sids, $sorted_sids, $fetched_subs, $first_ac_sbt;
 
-	function __construct($opt)
+	function __construct($opt = array())
 	{
 		$this->api = new UhuntApi;
 		$this->detect_uid($opt);
@@ -140,6 +140,19 @@ class UVaUser{
 		}
 	}
 
+	public function substats_count()
+	{
+		$cnt = [];
+		foreach($this->pid_key as $pid => &$p)
+			foreach($p as $sid => &$s){
+				if(!isset($cnt[$s['ver']]))
+					$cnt[$s['ver']] = 0;
+				$cnt[$s['ver']]++;
+			}
+		unset($p, $s);
+		return $cnt;
+	}
+
 	public function fetch_subs($force = false)
 	{
 		if($force || !$this->fetched_subs){
@@ -159,16 +172,19 @@ class UVaUser{
 	{
 		$this->fetch_subs();
 		$pid_sbt = [];
-		foreach($this->sids as $sid) {
-			$s = &$this->pid_key[ $this->sid2pid[$sid] ][$sid];
-			if('ac' !== $s['ver'])
-				continue;
-			$pid_sbt[ $s['pid'] ] = min(get($pid_sbt[ $s['pid'] ], PHP_INT_MAX), $s['sbt']);
-		}
-		unset($s);
+		foreach($this->pid_key as $pid => &$p)
+			foreach($p as $sid => &$s){
+				if('ac' !== $s['ver'])
+					continue;
+				if(!isset($pid_sbt[ $pid ]))
+					$pid_sbt[ $pid ] = PHP_INT_MAX;
+				$pid_sbt[ $pid ] = min($pid_sbt[ $pid ], $s['sbt']);
+			}
+		unset($p, $s);
 		arsort($pid_sbt);
-		$recent_ac = array_keys(array_slice($pid_sbt, 0, $n, true));
-		return array_map(array($this->api, 'pid2pnum'), $recent_ac);
+		$recent_ac_pid = array_keys(array_slice($pid_sbt, 0, $n, true));
+		$recent_ac_pnum = array_map(array($this->api, 'pid2pnum'), $recent_ac_pid);
+		return array_map(null, $recent_ac_pid, $recent_ac_pnum);
 	}
 
 	public function nos()
