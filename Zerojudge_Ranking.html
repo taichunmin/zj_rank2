@@ -97,8 +97,9 @@
       var debug = [];
       (function($){
         $(function(){
-          // spreadsheets feeds: https://spreadsheets.google.com/feeds/worksheets/1I5_0yxCsnftRDhB0mAdvEGYFo-kbLEDtkTN9oD-RJNk/public/full?alt=json
-          var spreadsheetsId = '1I5_0yxCsnftRDhB0mAdvEGYFo-kbLEDtkTN9oD-RJNk';
+          // spreadsheets feeds: https://spreadsheets.google.com/feeds/worksheets/1Qg5PIPiKgufZFsKdbc185FP4DX1k2X_lNlLJXzyAKkY/public/full?alt=json
+          var spreadsheetsId = '1Qg5PIPiKgufZFsKdbc185FP4DX1k2X_lNlLJXzyAKkY';
+
           $.getJSON('https://spreadsheets.google.com/feeds/worksheets/'+spreadsheetsId+'/public/full?alt=json', function(json){
             var worksheetsFeed = json.feed;
             $.each(worksheetsFeed.entry, function(i, worksheet){
