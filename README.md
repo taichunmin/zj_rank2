@@ -1,12 +1,18 @@
 # Zerojudge Statistic Updater Over Google SpreadSheets
 
-本程式能夠更新一個 Google SpreadSheets 內的 Zerojudge 帳號的統計資訊。
+本程式能夠更新一個 Google SpreadSheets 內的 Zerojudge 及 UVa 帳號的統計資訊。
 
-This program can update Zerojudge Account Statistic in a Google SpreadSheets.
+This program can update Zerojudge and UVa Account Statistic in a Google SpreadSheets.
+
+## Live Demo
+
+<http://taichunmin.idv.tw/zj_rank_nchueecsec_103_2.html>
 
 # Usage
 
 ## Installation
+
+* PHP 5.4+
 
 * git clone source code from github
 
@@ -22,9 +28,9 @@ composer install
 
 ## Google SpreadSheets Worksheets
 
-* 範本：<https://drive.google.com/previewtemplate?id=1WhZzUp8EerIuFprOIG7ZaSK2mtR4Jz3TVzu0vQlsl90&mode=public>
+* 範本：<https://drive.google.com/previewtemplate?id=1I5_0yxCsnftRDhB0mAdvEGYFo-kbLEDtkTN9oD-RJNk&mode=public>
 
-> 記得將 Worksheets 公開發佈到網路上
+> 記得將所有 Worksheets 公開發佈到網路上
 
 ## Configure
 
@@ -68,53 +74,34 @@ composer install
 
 #### Google SpreadSheets Config
 
-這兩個欄位需要填寫你想要動態更新的 SpreadSheets ID 中的 Worksheets ID。 查詢步驟如下：
+這個欄位需要填寫你想要動態更新的 SpreadSheets ID。 查詢步驟如下：
 
-* 先在網頁端開啟你想要的 SpreadSheets，然後複製網址如下：
+* 先在網頁端發佈你想要的 SpreadSheets，然後複製網址如下：
 
 ```
-https://docs.google.com/spreadsheets/d/1Qg5PIPiKgufZFsKdbc185FP4DX1k2X_lNlLJXzyAKkY/edit#gid=336254113
+https://docs.google.com/spreadsheets/d/1I5_0yxCsnftRDhB0mAdvEGYFo-kbLEDtkTN9oD-RJNk/pubhtml
 ```
 
 * 在網址中間就會有 SpreadSheets ID
 
 ```
-1Qg5PIPiKgufZFsKdbc185FP4DX1k2X_lNlLJXzyAKkY
+1I5_0yxCsnftRDhB0mAdvEGYFo-kbLEDtkTN9oD-RJNk
 ```
-
-* 透過 SpreadSheets ID 連結以下網址取得所有的 Worksheets
-
-> 請記得，將底下的 SpreadSheets ID 替換成你想要的。
-
-```
-https://spreadsheets.google.com/feeds/worksheets/1Qg5PIPiKgufZFsKdbc185FP4DX1k2X_lNlLJXzyAKkY/private/full
-```
-
-* 找到你想要的 Worksheets ID
-
-```
-https://spreadsheets.google.com/feeds/list/1Qg5PIPiKgufZFsKdbc185FP4DX1k2X_lNlLJXzyAKkY/o5k73i3/private/full
-```
-
-在這資料之中，`o5k73i3` 就是想要的 Worksheets ID。
-
-* 記得將 Worksheets 公開發佈到網路上
 
 <table>
 	<tr>
 		<th>GOOGLE_SPREADSHEET_ID</th>
-		<td>1Qg5PIPiKgufZFsKdbc185FP4DX1k2X_lNlLJXzyAKkY</td>
-	</tr>
-	<tr>
-		<th>GOOGLE_WORKSHEET_ID</th>
-		<td>o5k73i3</td>
+		<td>1I5_0yxCsnftRDhB0mAdvEGYFo-kbLEDtkTN9oD-RJNk</td>
 	</tr>
 </table>
+
+> 請務必確保工作表的名稱有 `ZeroJudge` 和 `UVa` (大小寫有別)，程式會根據這個名稱來執行。 如果需要自訂名稱，請自行修改程式。
 
 ## Execute Test
 
 ```sh
 cd zj_rank2/
+chmod u+x cron.sh
 ./cron.sh
 ```
 
@@ -148,10 +135,10 @@ crontab -e
 
 ## 修改呈現頁面
 
-使用 Bootstrap 製作的 Responsive Web Design 頁面位於 `src/Zerojudge_Ranking.html`，請自行修改程式碼的 `title`, `h1` 及以下的 `GOOGLE_SPREADSHEET_ID/GOOGLE_WORKSHEET_ID`。
+使用 Bootstrap 製作的 Responsive Web Design 頁面位於 `/Zerojudge_Ranking.html`，請自行修改程式碼的 `title`, `h1` 及以下的 `GOOGLE_SPREADSHEET_ID`。
 
 ```js
-var zj_rank = new Gsx('GOOGLE_SPREADSHEET_ID/GOOGLE_WORKSHEET_ID', function());
+var spreadsheetsId = '1I5_0yxCsnftRDhB0mAdvEGYFo-kbLEDtkTN9oD-RJNk';
 ```
 
 ## 授權
