@@ -61,11 +61,13 @@ foreach($worksheetFeed as $worksheet){
 				$row = $entry->getValues();
 				try{
 					$uvauser->detect_uid($row);
+					if(empty($row['uname']))
+						$row['uname'] = $uvauser->uname();
 					$profile = $uvauser->profile();
 					$profile['recent-ac'] = encode_json($uvauser->recent_ac());
 					$entry->update(array_merge(
 						$row,
-						array_only($profile, ['uname', 'uid', 'ac', 'nos', 'recent-ac'])
+						array_only($profile, ['uid', 'ac', 'nos', 'recent-ac'])
 					));
 					$pb->c();
 				} catch(Exception $e) {
