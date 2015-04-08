@@ -4,6 +4,7 @@
 
 namespace ZJR2;
 use \SplMinHeap;
+use \Exception;
 
 class UVaUser{
 	protected $uid = null, $api, $profile, $pid_key, $pid_stats, $sid2pid, $sids, $sorted_sids, $fetched_subs, $first_ac_sbt;
@@ -39,11 +40,26 @@ class UVaUser{
 		return $this;
 	}
 
+	public function uname(){
+		if($this->uid < 1)
+			throw new Exception('uid is required.');
+		$ret = $this->api->subs_user_last($this->uid, 0);
+		if(empty($ret['uname']) || "--- ? ---" === $ret['uname'])
+			throw new Exception('uid2uname() error.');
+		return $ret['uname'];
+	}
+
 	public function profile()
 	{
 		if(is_null($this->profile)){
+			if($this->uid < 1)
+				throw new Exception('uid is required.');
 			$tmp = $this->api->ranklist($this->uid);
 			$this->profile = $tmp[0];
+			if($this->uid != $this->profile['userid'])
+				throw new Exception('there are something wrong with profile.');
+			if("--- ? ---" === $this->profile['username'])
+				throw new Exception('uname fetched error.');
 			$this->profile['uid'] = $this->profile['userid'];
 			$this->profile['uname'] = $this->profile['username'];
 			$this->profile['last_update'] = time();
@@ -155,6 +171,8 @@ class UVaUser{
 
 	public function fetch_subs($force = false)
 	{
+		if($this->uid < 1)
+			throw new Exception('uid is required.');
 		if($force || !$this->fetched_subs){
 			if(!$this->sorted_sids){
 				$this->sorted_sids = true;

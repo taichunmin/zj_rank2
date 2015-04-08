@@ -3,6 +3,7 @@
 // http://zerojudge.tw/UserStatistic?account=loky
 
 namespace ZJR2;
+use \Exception;
 
 class UhuntApi
 {
@@ -40,6 +41,8 @@ class UhuntApi
 			throw new Exception('error: uname is required');
 		$curl = new Curl('uhunt.cookie');
 		$data = $curl->get(sprintf(self::API_BASE.'uname2uid/'.$uname));
+		if(intval($data['html']) < 1)
+			throw new Exception('Error: failed to map uname to uid.');
 		return intval($data['html']);
 	}
 
@@ -155,16 +158,35 @@ class UhuntApi
 	 */
 	public function subs_user($userId, $minSid = null)
 	{
-		if(empty($userId))
+		if(empty($userId) || intval($userId) < 1)
 			throw new Exception('error: userId is required');
 		$url = self::API_BASE.'subs-user/'.$userId;
-		if(!empty($userId))
+		if(!empty($minSid))
 			$url .= '/'.$minSid;
 		$curl = new Curl('uhunt.cookie');
 		$data = $curl->get($url);
 		$subs_user = json_decode($data['html'], true) ?: array();
 		foreach($subs_user['subs'] as &$sub){
-			$sub[2] = self::$MAP_VERDICT[ $sub[2] ] ?: 'se';
+			$sub[2] = self::$MAP_VERDICT[ $sub[2] ] ?: 'qu';
+			$sub = array_combine(self::$MAP_SUB_KEY, $sub);
+		}
+		unset($sub);
+		return $subs_user;
+	}
+
+	public function subs_user_last($userId, $count = null)
+	{
+		if(empty($userId) || intval($userId) < 1)
+			throw new Exception('error: userId is required');
+		$userId = intval($userId);
+		$url = self::API_BASE.'subs-user-last/'.$userId;
+		if(!empty($count))
+			$url .= '/'.$count;
+		$curl = new Curl('uhunt.cookie');
+		$data = $curl->get($url);
+		$subs_user = json_decode($data['html'], true) ?: array();
+		foreach($subs_user['subs'] as &$sub){
+			$sub[2] = self::$MAP_VERDICT[ $sub[2] ] ?: 'qu';
 			$sub = array_combine(self::$MAP_SUB_KEY, $sub);
 		}
 		unset($sub);
