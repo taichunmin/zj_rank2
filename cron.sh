@@ -1,8 +1,7 @@
 #!/bin/bash
 
-# 0 * * * * /home/taichunmin/zj_rank2/cron.sh 1>/home/taichunmin/zj_rank2/last.log 2>&1
-# */5 18-23 * * 2,4 /home/taichunmin/zj_rank2/cron.sh 1>/home/taichunmin/zj_rank2/last.log 2>&1
-# */5 12-19 * * 0 /home/taichunmin/zj_rank2/cron.sh 1>/home/taichunmin/zj_rank2/last.log 2>&1
+# 0 */3 * * * /home/taichunmin/zj_rank2/cron.sh 1>/home/taichunmin/zj_rank2/last.log 2>&1
+# */10 18-23 * * 2,4 /home/taichunmin/zj_rank2/cron.sh 1>/home/taichunmin/zj_rank2/last.log 2>&1
 
 PWD=$( cd "$( dirname "$0" )" && pwd )
 LOCKFILE="$PWD/cron.lock"
