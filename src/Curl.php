@@ -28,7 +28,7 @@ class Curl
 	 * @var array
 	 */
 	public $curlopts_all = array(
-		CURLOPT_CONNECTTIMEOUT_MS => 30000, // 單次超時 30 秒
+		CURLOPT_CONNECTTIMEOUT_MS => 60000, // 單次超時 60 秒
 		CURLOPT_TIMEOUT_MS        => 60000, // 總計超時 60 秒
 		CURLINFO_HEADER_OUT => true,
 		CURLOPT_FAILONERROR => true,

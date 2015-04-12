@@ -20,7 +20,9 @@ class Zerojudge
 		));
 		$this->ensure_login($data);
 		$statistic = array();
-		foreach(htmlqp(get($data['html'], ''), 'a[href*=status]') as $qpv){
+		if(empty($data['html']))
+			throw new Exception('no response html.');
+		foreach(htmlqp($data['html'], 'a[href*=status]') as $qpv){
 			$href = $qpv->attr('href');
 			if(! preg_match('/status=(\w+)/us', $href, $href_match))
 				continue;
@@ -43,7 +45,9 @@ class Zerojudge
 		file_put_contents('debug.html', $data['html']);
 		file_put_contents('debug.php', var_export($data, true));
 		$recent_ac = array();
-		foreach(htmlqp(get($data['html'], ''), 'tr[solutionid] a[href*=ShowProblem]') as $i => $qpv){
+		if(empty($data['html']))
+			throw new Exception('no response html.');
+		foreach(htmlqp($data['html'], 'tr[solutionid] a[href*=ShowProblem]') as $i => $qpv){
 			preg_match('/problemid=(\w+)/us', $qpv->attr('href'), $match);
 			$problemId = $match[1];
 			if(!isset($recent_ac[$problemId]))
@@ -58,6 +62,8 @@ class Zerojudge
 		$curl = &$this->curl;
 		if($data['url'] === 'http://zerojudge.tw/Login'){
 			$login_from = array();
+			if(empty($data['html']))
+				throw new Exception('no response html.');
 			foreach( htmlqp($data['html'], 'form[action=Login] input[name]') as $qpv )
 				$login_from[ $qpv->attr('name') ] = $qpv->val();
 			if(!empty($login_from)){

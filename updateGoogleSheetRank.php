@@ -38,8 +38,10 @@ foreach($worksheetFeed as $worksheet){
 			$zj = new ZJR2\Zerojudge();
 
 			foreach($listEntries as $entry){
-				$row = $entry->getValues();
-				if(!empty($row['account'])){
+				try{
+					$row = $entry->getValues();
+					if(empty($row['account']))
+						throw new Exception('account is empty.');
 					$statistic = $zj->get_statistic($row['account']);
 					$statistic['nos'] = 0;
 					foreach(array('ac', 'wa', 'tle', 'mle', 're', 'ce') as $ik)
@@ -50,6 +52,8 @@ foreach($worksheetFeed as $worksheet){
 						array_only($statistic, ['ac', 'nos', 'recent-ac'])
 					));
 					$pb->c();
+				} catch(Exception $e) {
+					echo $e->getMessage().PHP_EOL.$e->getTraceAsString();
 				}
 			}
 			break;
