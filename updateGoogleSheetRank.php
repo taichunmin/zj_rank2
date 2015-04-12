@@ -36,6 +36,7 @@ foreach($worksheetFeed as $worksheet){
 	switch ($worksheet->getTitle()) {
 		case 'ZeroJudge':
 			$zj = new ZJR2\Zerojudge();
+			$errCnt = 0;
 
 			foreach($listEntries as $entry){
 				try{
@@ -44,8 +45,11 @@ foreach($worksheetFeed as $worksheet){
 						throw new Exception('account is empty.');
 					$statistic = $zj->get_statistic($row['account']);
 					$statistic['nos'] = 0;
-					foreach(array('ac', 'wa', 'tle', 'mle', 're', 'ce') as $ik)
-						$statistic['nos'] += get($statistic[$ik], 0);
+					foreach(array('ac', 'wa', 'tle', 'mle', 're', 'ce') as $ik){
+						if(!isset($statistic[$ik]))
+							throw new Exception('statistic key not exists.');
+						$statistic['nos'] += intval($statistic[$ik]);
+					}
 					$statistic['recent-ac'] = encode_json($zj->recent_ac($row['account']));
 					$entry->update(array_merge(
 						$row,
@@ -54,12 +58,16 @@ foreach($worksheetFeed as $worksheet){
 					$pb->c();
 				} catch(Exception $e) {
 					echo $e->getMessage().PHP_EOL.$e->getTraceAsString();
+					$errCnt ++;
+					if($errCnt > 3)
+						break;
 				}
 			}
 			break;
 
 		case 'UVa':
 			$uvauser = new ZJR2\UVaUser();
+			$errCnt = 0;
 
 			foreach($listEntries as $entry){
 				$row = $entry->getValues();
@@ -76,6 +84,9 @@ foreach($worksheetFeed as $worksheet){
 					$pb->c();
 				} catch(Exception $e) {
 					echo $e->getMessage().PHP_EOL.$e->getTraceAsString();
+					$errCnt ++;
+					if($errCnt > 3)
+						break;
 				}
 			}
 			break;

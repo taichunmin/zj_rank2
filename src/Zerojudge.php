@@ -22,7 +22,9 @@ class Zerojudge
 		$statistic = array();
 		if(empty($data['html']))
 			throw new Exception('no response html.');
+		$isBanned = true;
 		foreach(htmlqp($data['html'], 'a[href*=status]') as $qpv){
+			$isBanned = false;
 			$href = $qpv->attr('href');
 			if(! preg_match('/status=(\w+)/us', $href, $href_match))
 				continue;
@@ -30,6 +32,8 @@ class Zerojudge
 			$cnt = intval($qpv->text());
 			$statistic[strtolower($status)] = $cnt;
 		}
+		if($isBanned)
+			throw new Exception($data['html']);
 		return $statistic;
 	}
 
@@ -61,6 +65,7 @@ class Zerojudge
 	{
 		$curl = &$this->curl;
 		if($data['url'] === 'http://zerojudge.tw/Login'){
+			usleep(rand(200,1000)); // sleep 0.2 ~ 1.0 second
 			$login_from = array();
 			if(empty($data['html']))
 				throw new Exception('no response html.');
