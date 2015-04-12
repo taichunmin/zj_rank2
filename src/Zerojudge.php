@@ -51,12 +51,16 @@ class Zerojudge
 		$recent_ac = array();
 		if(empty($data['html']))
 			throw new Exception('no response html.');
+		$isBanned = true;
 		foreach(htmlqp($data['html'], 'tr[solutionid] a[href*=ShowProblem]') as $i => $qpv){
+			$isBanned = false;
 			preg_match('/problemid=(\w+)/us', $qpv->attr('href'), $match);
 			$problemId = $match[1];
 			if(!isset($recent_ac[$problemId]))
 				$recent_ac[$problemId] = $i;
 		}
+		if($isBanned)
+			throw new Exception($data['html']);
 		asort($recent_ac);
 		return array_keys(array_slice($recent_ac, 0, $n, true));
 	}
