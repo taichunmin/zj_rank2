@@ -3,6 +3,7 @@
 // http://zerojudge.tw/UserStatistic?account=loky
 
 namespace ZJR2;
+use \Exception;
 
 class Zerojudge
 {
