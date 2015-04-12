@@ -23,9 +23,9 @@ class Zerojudge
 		$statistic = array();
 		if(empty($data['html']))
 			throw new Exception('no response html.');
-		$isBanned = true;
+		if(strlen($data['html']) < 1000) // banned
+			throw new Exception($data['html']);
 		foreach(htmlqp($data['html'], 'a[href*=status]') as $qpv){
-			$isBanned = false;
 			$href = $qpv->attr('href');
 			if(! preg_match('/status=(\w+)/us', $href, $href_match))
 				continue;
@@ -33,8 +33,6 @@ class Zerojudge
 			$cnt = intval($qpv->text());
 			$statistic[strtolower($status)] = $cnt;
 		}
-		if($isBanned)
-			throw new Exception($data['html']);
 		return $statistic;
 	}
 
@@ -52,16 +50,14 @@ class Zerojudge
 		$recent_ac = array();
 		if(empty($data['html']))
 			throw new Exception('no response html.');
-		$isBanned = true;
+		if(strlen($data['html']) < 1000) // banned
+			throw new Exception($data['html']);
 		foreach(htmlqp($data['html'], 'tr[solutionid] a[href*=ShowProblem]') as $i => $qpv){
-			$isBanned = false;
 			preg_match('/problemid=(\w+)/us', $qpv->attr('href'), $match);
 			$problemId = $match[1];
 			if(!isset($recent_ac[$problemId]))
 				$recent_ac[$problemId] = $i;
 		}
-		if($isBanned)
-			throw new Exception($data['html']);
 		asort($recent_ac);
 		return array_keys(array_slice($recent_ac, 0, $n, true));
 	}
